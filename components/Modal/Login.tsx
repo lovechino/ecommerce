@@ -1,11 +1,30 @@
 "use client";
 
+import { LoginApi } from "@/Apis/User";
+import Notification from "@/components/Notification/Notifacation";
+import { setUser } from "@/Redux/auth";
+import { useAppDispatch, useAppSelector } from "@/Redux/hook";
 import { useState } from "react";
 
-const ModalAuth = ({ isOpen, closeModal }: { isOpen: boolean; closeModal: () => void }) => {
+const ModalAuth = ({
+  isOpen,
+  closeModal,
+}: {
+  isOpen: boolean;
+  closeModal: () => void;
+}) => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
-
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const dispatch = useAppDispatch();
   if (!isOpen) return null;
+  const handleLogin = async () => {
+    const res = await LoginApi({ username, password });
+    if (res.Error === false) {
+      dispatch(setUser(res.Object));
+      closeModal();
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-400 bg-opacity-50">
@@ -45,15 +64,17 @@ const ModalAuth = ({ isOpen, closeModal }: { isOpen: boolean; closeModal: () => 
 
         {/* Form Area */}
         {activeTab === "login" ? (
-          <form className="space-y-4">
+          <div className="space-y-4">
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 Email
               </label>
               <input
-                type="email"
-                placeholder="Enter your email"
+                type="username"
+                placeholder="Enter your username"
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div>
@@ -64,17 +85,19 @@ const ModalAuth = ({ isOpen, closeModal }: { isOpen: boolean; closeModal: () => 
                 type="password"
                 placeholder="Enter your password"
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <button
-              type="submit"
+              onClick={handleLogin}
               className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
             >
               Login
             </button>
-          </form>
+          </div>
         ) : (
-          <form className="space-y-4">
+          <div className="space-y-4">
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 Username
@@ -111,7 +134,7 @@ const ModalAuth = ({ isOpen, closeModal }: { isOpen: boolean; closeModal: () => 
             >
               Register
             </button>
-          </form>
+          </div>
         )}
       </div>
     </div>

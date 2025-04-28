@@ -1,21 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { Key, useState } from "react";
 import { GetAllProduct } from "@/Apis/Product";
 import CardProduct from "./Card";
 import { useAppSelector } from "@/Redux/hook";
-
+import { ProductType } from "@/Utils/type";
 
 const ListProductHome = () => {
   GetAllProduct();
-  const product = useAppSelector((state)=>state.product.listProduct)
+  const product = useAppSelector((state) => state.product.listProduct);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8; // số sản phẩm mỗi trang
 
   // Tính chỉ số bắt đầu và kết thúc
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = product?.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts: any = product?.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   const totalPages = Math.ceil(product?.length / productsPerPage);
 
@@ -29,16 +32,24 @@ const ListProductHome = () => {
 
   return (
     <div className="container mx-auto px-4 py-10">
-        <h2 className="text-2xl font-bold mb-4 text-center">Sản Phẩm</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">Sản Phẩm</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {currentProducts.map((item) => (
-          <CardProduct
-            key={item.id}
-            productname={item.productname}
-            Price={item.Price}
-            pathimg={item.pathimg}
-          />
-        ))}
+        {currentProducts.map(
+          (item: {
+            id: Key | null | undefined;
+            productname: string;
+            Price: number | null | undefined;
+            pathimg: string;
+          }) => (
+            <CardProduct
+              key={item.id}
+              productname={item.productname}
+              id={item.id}
+              Price={item.Price}
+              pathimg={item.pathimg}
+            />
+          )
+        )}
       </div>
 
       {/* Pagination Controls */}
