@@ -1,9 +1,54 @@
 "use client";
+import {
+  deCreaseItem,
+  inCreaseItem,
+  removeItem,
+  updateQuantity,
+} from "@/Redux/cart";
+import { useAppDispatch, useAppSelector } from "@/Redux/hook";
+import { CartIntemType } from "@/Utils/type";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 const CartPage = () => {
-  const [quantity, setQuantity] = useState(1);
+  const [selectedItems, setSelectedItems] = useState<CartIntemType[]>([]);
+  const dispatch = useAppDispatch();
+  const { items } = useAppSelector((state) => state.cart);
+
+  const handleItemCheckboxChange = (item: CartIntemType) => {
+    const isSelected = selectedItems.some(
+      (selectedItem) => selectedItem.id === item.id
+    );
+    if (isSelected) {
+      setSelectedItems(
+        selectedItems.filter((selectedItem) => selectedItem.id !== item.id)
+      );
+    } else {
+      setSelectedItems([...selectedItems, item]);
+    }
+  };
+
+  const handleCheckAll = (event: any) => {
+    if (event.target.checked) {
+      setSelectedItems([...items]);
+      console.log("đã chọn tất cả sản phẩm");
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
+  const isItemSelected = (item: CartIntemType) => {
+    return selectedItems.some((selectedItem) => selectedItem.id === item.id);
+  };
+
+  // Tính tổng tiền của các sản phẩm đã chọn
+  const selectedTotalAmount = useMemo(() => {
+    return selectedItems.reduce(
+      (total, item) => total + item.Price * item.qualitiy,
+      0
+    );
+  }, [selectedItems]);
+
   return (
     <>
       <div className="flex flex-col lg:flex-row p-4 lg:p-8 gap-8">
@@ -181,81 +226,108 @@ const CartPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4">Giỏ hàng</h2>
 
-            <em className="text-gray-400">
-              Giỏ hàng của bạn đang trống
-              <br />
-              Bắt đầu mua sắm thôi!
-            </em>
-
-            {/* Cart Items Table */}
-            <div className="overflow-x-auto mt-6">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-100 text-left">
-                  <tr>
-                    <th className="p-3">
-                      <div className="flex items-center gap-2">
-                        <input type="checkbox" id="chkAllItems" />
-                        <label htmlFor="chkAllItems">Tất cả sản phẩm</label>
-                      </div>
-                    </th>
-                    <th className="p-3">ĐVT</th>
-                    <th className="p-3">Số lượng</th>
-                    <th className="p-3">Tổng tiền</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* Item Row */}
-                  <tr className="border-t">
-                    <td className="p-3">
-                      <div className="flex items-center gap-2">
-                        <input type="checkbox" />
-                        {/* <img src="" alt="" className="w-16 h-16 bg-gray-200" /> */}
-                        <div>
-                          <Link href="#" className="font-semibold">
-                            Tên sản phẩm
-                          </Link>
-                          <div className="text-sm text-gray-500">
-                            Thuộc tính sản phẩm
-                          </div>
-                          <div className="text-sm">Giá sản phẩm</div>
-                          <button className="text-red-500 text-xs mt-1">
-                            Xóa
-                          </button>
+            {items.length === 0 ? (
+              <em className="text-gray-400">
+                Giỏ hàng của bạn đang trống
+                <br />
+                Bắt đầu mua sắm thôi!
+              </em>
+            ) : (
+              <div className="overflow-x-auto mt-6">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100 text-left">
+                    <tr>
+                      <th className="p-3">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            id="chkAllItems"
+                            onChange={handleCheckAll}
+                            checked={
+                              selectedItems.length === items.length &&
+                              items.length > 0
+                            }
+                          />
+                          <label htmlFor="chkAllItems">Tất cả sản phẩm</label>
                         </div>
-                      </div>
-                    </td>
-                    <td className="p-3">Đơn vị tính</td>
-                    <td className="p-3">
-                      <div className="flex items-center justify-center gap-2">
-                        <button
-                          onClick={() => setQuantity(quantity - 1)}
-                          disabled={quantity <= 1}
-                          className="px-2 border rounded"
-                        >
-                          -
-                        </button>
-                        <input
-                          type="number"
-                          min="1"
-                          value={quantity}
-                          onChange={(e) => setQuantity(Number(e.target.value))}
-                          className="w-12 text-center border rounded"
-                        />
-                        <button
-                          onClick={() => setQuantity(quantity + 1)}
-                          className="px-2 border rounded"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <p className="text-center">Tổng giá</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                      </th>
+                      <th className="p-3">ĐVT</th>
+                      <th className="p-3">Số lượng</th>
+                      <th className="p-3">Tổng tiền</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item, index) => (
+                      <tr key={index} className="border-t">
+                        <td className="p-3">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={isItemSelected(item)}
+                              onChange={() => handleItemCheckboxChange(item)}
+                            />
+                            {/* <img src="" alt="" className="w-16 h-16 bg-gray-200" /> */}
+                            <div>
+                              <Link href="#" className="font-semibold">
+                                {item.productname}
+                              </Link>
+                              <div className="text-sm text-gray-500">
+                                Thuộc tính sản phẩm
+                              </div>
+                              <div className="text-sm">{item.Price}</div>
+                              {isItemSelected(item) && (
+                                <div className="mt-2 text-sm text-blue-500">
+                                  Thông tin chi tiết sản phẩm {item.productname}
+                                  {/* Hiển thị thêm thông tin sản phẩm ở đây */}
+                                </div>
+                              )}
+                              <button
+                                onClick={() => dispatch(removeItem(item.id))}
+                                className="text-red-500 text-xs mt-1"
+                              >
+                                Xóa
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-3">Đơn vị tính</td>
+                        <td className="p-3">
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              disabled={item.qualitiy <= 1}
+                              onClick={() => dispatch(deCreaseItem(item))}
+                              className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-lg font-semibold hover:bg-gray-100"
+                            >
+                              -
+                            </button>
+
+                            <input
+                              type="number"
+                              min="1"
+                              value={item.qualitiy}
+                              onChange={(e) => dispatch(updateQuantity(item))}
+                              className="w-12 h-8 text-center border border-gray-300 rounded"
+                            />
+
+                            <button
+                              onClick={() => dispatch(inCreaseItem(item))}
+                              className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded text-lg font-semibold hover:bg-gray-100"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </td>
+                        <td className="p-3">
+                          <p className="text-center">
+                            {item.Price * item.qualitiy}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
             <em className="block text-sm text-gray-500 mt-4">
               Có <strong>15</strong> người khác cũng đang xem giỏ hàng này
@@ -318,7 +390,8 @@ const CartPage = () => {
             <div className="border-t my-2"></div>
             <div className="flex justify-between font-bold text-lg">
               <p>Tổng cộng</p>
-              <p>Tổng giá</p>
+              <p>{selectedTotalAmount} VNĐ</p>{" "}
+              {/* Hiển thị tổng tiền sản phẩm đã chọn */}
             </div>
           </div>
         </section>
@@ -346,7 +419,9 @@ const CartPage = () => {
           </Link>
           <div className="flex flex-col items-end">
             <div className="font-semibold">
-              Tổng tiền: <span className="text-blue-600">Tổng giá</span>
+              Tổng tiền:{" "}
+              <span className="text-blue-600">{selectedTotalAmount} VNĐ</span>{" "}
+              {/* Hiển thị tổng tiền sản phẩm đã chọn */}
             </div>
           </div>
           <button className="bg-blue-600 text-white px-6 py-3 rounded-lg">

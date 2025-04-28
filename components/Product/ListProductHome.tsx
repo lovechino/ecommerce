@@ -40,6 +40,7 @@ const ListProductHome = () => {
             productname: string;
             Price: number | null | undefined;
             pathimg: string;
+            productcode: string;
           }) => (
             <CardProduct
               key={item.id}
@@ -47,6 +48,7 @@ const ListProductHome = () => {
               id={item.id}
               Price={item.Price}
               pathimg={item.pathimg}
+              productCode={item.productcode}
             />
           )
         )}

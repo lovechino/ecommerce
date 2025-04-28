@@ -7,6 +7,7 @@ import { useAppSelector } from "@/Redux/hook";
 import { baseURL } from "@/Utils/Axios";
 import { Avatar } from "antd";
 import { UserProfile } from "@/Utils/type";
+import Link from "next/link";
 
 const ModalAuth = dynamic(() => import("../Modal/Login"), {
   loading: () => {
@@ -28,9 +29,9 @@ const Navbar = () => {
 
         {/* Navigation (Hidden on smaller screens) */}
         <nav className="hidden md:flex items-center space-x-6 text-sm text-gray-700">
-          <a href="#" className=" text-xl hover:text-gray-900">
-            Product
-          </a>
+          <Link href="/Product" className=" text-xl hover:text-gray-900">
+            Products
+          </Link>
           <a href="#" className=" text-xl hover:text-gray-900">
             Blog
           </a>
@@ -52,7 +53,9 @@ const Navbar = () => {
             </div>
           </div>
 
-          <BsBag className="text-xl text-gray-700 hover:text-gray-900 cursor-pointer" />
+          <Link href="/Cart">
+            <BsBag className="text-xl text-gray-700 hover:text-gray-900 cursor-pointer" />
+          </Link>
           {user === null ? (
             <FiUser
               onClick={() => setShowModal(true)}

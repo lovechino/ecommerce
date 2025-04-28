@@ -23,3 +23,18 @@ export const GetAllProduct = () => {
     fetchData();
   }, []);
 };
+
+export const GetProductById = async (id: string) => {
+  return await axiosInstance
+    .post(
+      `/Product/GetProduct?productCode=${id}`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
+};
