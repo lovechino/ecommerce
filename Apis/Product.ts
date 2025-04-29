@@ -38,3 +38,9 @@ export const GetProductById = async (id: string) => {
     .then((res) => res.data)
     .catch((err) => console.log(err));
 };
+
+export const getReviewProducts = async () => {
+  return await axiosInstance
+    .get("/MobileLogin/GetListProductReview")
+    .then((res) => res.data);
+};

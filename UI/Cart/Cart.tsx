@@ -307,6 +307,7 @@ const CartPage = () => {
                               value={item.qualitiy}
                               onChange={(e) => dispatch(updateQuantity(item))}
                               className="w-12 h-8 text-center border border-gray-300 rounded"
+                              readOnly
                             />
 
                             <button

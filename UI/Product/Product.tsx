@@ -1,90 +1,116 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { FiLoader } from "react-icons/fi";
+import CardProduct from "@/components/Product/Card";
+import { useAppSelector } from "@/Redux/hook";
+import { ProductType } from "@/Utils/type";
+import { Key, useEffect, useState } from "react";
+import { FaFilter, FaTruck, FaTags } from "react-icons/fa";
+import { MdSort } from "react-icons/md";
 
-const ListProductHome = dynamic(
-  () => import("@/components/Product/ListProductHome"),
-  {
-    loading: () => {
-      return <FiLoader className="animate-spin text-blue-500 text-2xl" />;
-    },
-  }
-);
+const filterOptions = [
+  { label: "Bộ lọc", icon: <FaFilter /> },
+  { label: "Sẵn hàng", icon: <FaTruck /> },
+  { label: "Giá", icon: <FaTags /> },
+  "Nhu cầu sử dụng",
+  "Tính năng đặc biệt",
+  "Bộ nhớ trong",
+  "Dung lượng RAM",
+  "Màn hình",
+  "Hệ điều hành",
+  "Chipset",
+];
+
+const sortOptions = [
+  { label: "Giá Cao - Thấp", icon: <MdSort /> },
+  { label: "Giá Thấp - Cao", icon: <MdSort /> },
+];
 
 const ProductPage = () => {
+  const [selectedSort, setSelectedSort] = useState<string>("");
+  const [sortedProducts, setSortedProducts] = useState<ProductType[]>([]);
+  const product = useAppSelector((state) => state.product.listProduct);
+
+  useEffect(() => {
+    const sorted = [...product].sort((a: ProductType, b: ProductType) => {
+      switch (selectedSort) {
+        case "Giá Cao - Thấp":
+          return (b.Price ?? 0) - (a.Price ?? 0);
+        case "Giá Thấp - Cao":
+          return (a.Price ?? 0) - (b.Price ?? 0);
+        default:
+          return 0;
+      }
+    });
+    setSortedProducts(sorted);
+  }, [selectedSort, product]);
+
   return (
-    <div className=" px-4 py-8 flex flex-row gap-8">
-      <div className="w-64 p-4 bg-white rounded-lg shadow-md space-y-6">
-        {/* Product Size */}
-        <div>
-          <h2 className="font-semibold text-gray-700 mb-2">PRODUCT SIZE</h2>
-          <div className="space-y-2">
-            {["S", "M", "L", "XL", "XXL", "XXXL"].map((size) => (
-              <div key={size} className="flex items-center gap-2">
-                <input type="checkbox" id={size} className="accent-gray-600" />
-                <label htmlFor={size} className="text-gray-600">
-                  {size}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className="px-4 py-8 flex flex-col gap-4">
+      {/* Filter Buttons */}
+      <div className="flex flex-wrap gap-2">
+        {filterOptions.map((item, index) =>
+          typeof item === "string" ? (
+            <button
+              key={index}
+              className="bg-gray-100 px-4 py-2 rounded-full text-sm text-gray-700 hover:bg-gray-200"
+            >
+              {item}
+            </button>
+          ) : (
+            <button
+              key={index}
+              className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-sm text-gray-700 hover:bg-gray-200"
+            >
+              {item.icon} {item.label}
+            </button>
+          )
+        )}
+        <select className="bg-gray-100 px-4 py-2 rounded-full text-sm text-gray-700 hover:bg-gray-200">
+          <option>Camera</option>
+        </select>
+        <select className="bg-gray-100 px-4 py-2 rounded-full text-sm text-gray-700 hover:bg-gray-200">
+          <option>Lenovo Tab</option>
+        </select>
+      </div>
 
-        {/* Product Rate */}
-        <div>
-          <h2 className="font-semibold text-gray-700 mb-2">PRODUCT RATE</h2>
-          <div className="space-y-2">
-            {[{ rate: 4.5 }, { rate: 4 }, { rate: 3 }].map(({ rate }) => (
-              <div
-                key={rate}
-                className="flex items-center gap-2 cursor-pointer"
-              >
-                <div className="flex text-yellow-400">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <svg
-                      key={i}
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill={i < Math.floor(rate) ? "currentColor" : "none"}
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 17.27L18.18 21l-1.63-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.45 4.73L5.82 21z"
-                      />
-                    </svg>
-                  ))}
-                </div>
-                <span className="text-gray-600">{rate}+</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Product Price */}
-        <div>
-          <h2 className="font-semibold text-gray-700 mb-2">PRODUCT PRICE</h2>
-          <div className="flex gap-2">
-            {["$", "$$", "$$$"].map((price, idx) => (
-              <button
-                key={idx}
-                className="px-3 py-1 rounded-full border border-gray-300 hover:bg-gray-200 text-gray-600 text-sm"
-              >
-                {price}
-              </button>
-            ))}
-          </div>
+      {/* Sort Options */}
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-2">Sắp xếp theo</h3>
+        <div className="flex flex-wrap gap-3">
+          {sortOptions.map((opt) => (
+            <button
+              key={opt.label}
+              onClick={() => setSelectedSort(opt.label)}
+              className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm border transition
+              ${
+                selectedSort === opt.label
+                  ? "border-red-500 text-red-500 bg-red-100"
+                  : "border-gray-300 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              {opt.icon} {opt.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div>
-        <ListProductHome />
+      {/* Product List */}
+      <div className="mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {sortedProducts.map((item) => (
+            <CardProduct
+              key={item.id}
+              productname={item.productname}
+              id={item.id}
+              Price={item.Price}
+              pathimg={item.pathimg}
+              productCode={item.productcode}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
 };
+
 export default ProductPage;

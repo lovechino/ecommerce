@@ -22,6 +22,9 @@ const HomeScreeen = () => {
              <Navbar /> */}
       <Hero />
       <ListPrudctHome />
+      <ListPrudctHome />
+      <ListPrudctHome />
+      <ListPrudctHome />
       <Footer />
       {/* <BottomNav/> */}
     </div>
