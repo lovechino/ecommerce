@@ -8,7 +8,7 @@ const TabPickOnStore = () => {
             <div className='w-full'>
                 <div className='flex justify-between'>
                     <div className='w-[45%]'>
-                        <span className='uppercase text-blue-700'>tỉnh/thành phố</span>
+                        <span className='uppercase text-blue-700 text-[16px]'>tỉnh/thành phố</span>
                         <div className='mt-3'>
                             <Select
                                 placeholder="Chọn Tỉnh/Thành phố"
@@ -17,7 +17,7 @@ const TabPickOnStore = () => {
                         </div>
                     </div>
                     <div className='w-[45%]'>
-                        <span className='uppercase text-blue-700'>quận/huyện</span>
+                        <span className='uppercase text-blue-700 text-[16px]'>quận/huyện</span>
                         <div className='mt-3'>
                             <Select
                                 placeholder="Chọn quận/huyện"
@@ -27,7 +27,7 @@ const TabPickOnStore = () => {
                     </div>
                 </div>
                 <div className='mt-3'>
-                    <span className='uppercase text-blue-700'>cửa hàng</span>
+                    <span className='uppercase text-blue-700 text-[16px]'>cửa hàng</span>
                     <div className='mt-3'>
                         <Select
                             placeholder="Chọn địa chỉ cửa hàng"
@@ -36,8 +36,10 @@ const TabPickOnStore = () => {
                     </div>
                 </div>
                 <div className='mt-3'>
-                    <span className='uppercase text-blue-700'>Ghi chú</span>
-                    <TextArea rows={3} maxLength={100} showCount />
+                    <span className='uppercase text-blue-700 text-[16px]'>Ghi chú</span>
+                    <div className='mt-3'>
+                        <TextArea rows={3} maxLength={100} showCount />
+                    </div>
                 </div>
             </div>
         </>

@@ -1,10 +1,12 @@
 'use client'
 
-import { Input, Tabs } from "antd";
+import { Checkbox, Input, Tabs } from "antd";
 import ListOrderProduct from "../Product/ListOrderProduct";
 import "@/Styles/Payment.css"
 import TabPickOnStore from "./TabPickOnStore";
 import TabShipping from "./TabShipping";
+import { useState } from "react";
+import type { CheckboxProps } from 'antd';
 
 const listOrderProduct = [
     {
@@ -25,7 +27,13 @@ const listOrderProduct = [
     }
 ]
 
-const PaymentInfo = () => {
+const TabPaymentInfo = () => {
+    const [companyInvoiceVisible, setCompanyInvoiceVisible] = useState(false);
+
+    const hanldeOpenCompanyInvoice: CheckboxProps['onChange'] = (e) => {
+        setCompanyInvoiceVisible(e.target.checked);
+    };
+
     return (
         <>
             <div className="rounded-2xl p-5 border-[0.3px] border-gray-300 bg-white">
@@ -40,13 +48,14 @@ const PaymentInfo = () => {
                 <div className="flex flex-col gap-5 mt-3">
                     <Input
                         placeholder="Email"
+                        className="placeholder:text-lg"
                     />
                     <i className="text-gray-400"> (*) Hóa đơn VAT sẽ được gửi qua email này</i>
                 </div>
             </div>
             <div className="text-lg my-5 font-semibold uppercase">Thông tin nhận hàng</div>
-            <div className="rounded-2xl border-[0.3px] border-gray-300 p-5 bg-white">
-                <Tabs 
+            <div className="rounded-2xl border-[0.3px] border-gray-300 px-5 pb-5 bg-white">
+                <Tabs
                     defaultActiveKey="1"
                     items={[
                         {
@@ -64,8 +73,29 @@ const PaymentInfo = () => {
                     className="custom-tabs-delivery w-full"
                 />
             </div>
+            <div className="my-5">
+                <Checkbox
+                    onChange={hanldeOpenCompanyInvoice}
+                    className="custom-checkbox !text-lg h-fit"
+                >
+                    Yêu cầu xuất hoá đơn công ty
+                </Checkbox>
+            </div>
+            {companyInvoiceVisible && (
+                <div className="bg-white rounded-2xl p-5">
+                    <div className='text-gray-500 uppercase ml-3 text-small'>tên công ty</div>
+                    <Input placeholder="Tên công ty" variant="underlined" className="placeholder:text-lg" />
+                    <div className='text-gray-500 uppercase ml-3 text-small mt-3'>địa chỉ</div>
+                    <Input placeholder="Địa chỉ công ty" variant="underlined" className="placeholder:text-lg" />
+                    <div className='text-gray-500 uppercase ml-3 text-small mt-3'>mã số thuế</div>
+                    <Input placeholder="Mã số thuế" variant="underlined" className="placeholder:text-lg" />
+                </div>
+            )}
+           
+
+
         </>
     )
 }
 
-export default PaymentInfo;
+export default TabPaymentInfo;

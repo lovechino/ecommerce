@@ -1,9 +1,8 @@
 import { IoMdArrowBack } from "react-icons/io";
 import { Tabs } from 'antd';
 import "@/Styles/Payment.css"
-import PaymentInfo from "@/components/Payment/PaymentInfo";
-
-
+import TabPaymentInfo from "@/components/Payment/TabPaymentInfo";
+import TabPayment from "@/components/Payment/TabPayment";
 
 const PaymentPage = () => {
     return (
@@ -16,8 +15,8 @@ const PaymentPage = () => {
                         </i>
                         <div className="text-center text-xl font-semibold flex-1">Thông tin</div>
                     </div>
-                    <div className="bg-gray-300 w-full h-[1px] mb-5"></div>
-                    <div className="flex justify-center mb-20">
+                    <div className="bg-gray-300 w-full h-[1px]"></div>
+                    <div className="flex justify-center mb-15">
                         <Tabs
                             defaultActiveKey="1"
                             items={[
@@ -25,20 +24,20 @@ const PaymentPage = () => {
                                     label: '1. THÔNG TIN',
                                     key: '1',
                                     children: (
-                                        <PaymentInfo />
+                                        <TabPaymentInfo />
                                     ),
                                 },
                                 {
                                     label: '2. THANH TOÁN',
                                     key: '2',
-                                    children: 'Tab 2',
+                                    children: <TabPayment />,
                                 },
                             ]}
                             size="large"
                             className="custom-tabs-payment w-full"
                         />
                     </div>
-                    <div className="sticky bottom-0 bg-white p-5 rounded-xl">
+                    <div className="sticky bottom-0 bg-white p-5 rounded-xl shadow-top">
                         <div className="flex justify-between">
                             <div className="text-lg">Tổng tiền tạm tính</div>
                             <div className="text-lg text-red-600">1000000đ</div>
