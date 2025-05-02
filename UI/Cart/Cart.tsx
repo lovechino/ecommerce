@@ -198,9 +198,8 @@ const CartPage = () => {
                   <input type="checkbox" />
                   <label className="flex items-center gap-2">
                     <img
-                      src={`https://mcdn.coolmate.me/image/October2024/mceclip${idx}_${
-                        idx === 1 ? 171 : idx === 2 ? 6 : idx === 3 ? 81 : 42
-                      }.png`}
+                      src={`https://mcdn.coolmate.me/image/October2024/mceclip${idx}_${idx === 1 ? 171 : idx === 2 ? 6 : idx === 3 ? 81 : 42
+                        }.png`}
                       className="w-8 h-8"
                       alt="ịmage"
                     />
@@ -425,9 +424,11 @@ const CartPage = () => {
               {/* Hiển thị tổng tiền sản phẩm đã chọn */}
             </div>
           </div>
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg">
-            Thanh toán
-          </button>
+          <Link href={'/Cart/Payment'}>
+            <button className="bg-blue-600 text-white px-6 py-3 rounded-lg cursor-pointer">
+              Thanh toán
+            </button>
+          </Link>
         </div>
       </div>
     </>

@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+/* Custom tabs antd */
+.custom-tabs-payment .ant-tabs-nav {
+    @apply bg-gray-100 rounded-lg p-2 font-semibold;
+}
+
+.custom-tabs-payment .ant-tabs-tab-active .ant-tabs-tab-btn {
+    @apply !text-red-500 !text-center;
+}
+
+.custom-tabs-payment .ant-tabs-ink-bar {
+    @apply bg-red-500;
+}
+
+.custom-tabs-payment .ant-tabs-nav-list {
+    @apply w-full flex;
+}
+
+.custom-tabs-payment .ant-tabs-tab {
+    @apply w-[50%] flex justify-center;
+}
+
+
+.custom-tabs-delivery .ant-tabs-nav {
+    @apply bg-white rounded-lg p-2 font-semibold;
+}
+
